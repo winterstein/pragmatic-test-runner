@@ -13,8 +13,10 @@ public class FindJavaTestsTest {
 	public void testRun() {
 		File f = new File("bin");
 		FindJavaTests fjt = new FindJavaTests(f);
-		List<String> classes = fjt.run();
+		List<String> classes = fjt.run();		
 		System.out.println(classes);
+		assert ! classes.isEmpty();
+		assert classes.contains(getClass().getName()) : classes;
 	}
 
 }

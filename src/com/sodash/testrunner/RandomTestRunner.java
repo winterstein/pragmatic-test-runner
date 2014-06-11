@@ -4,7 +4,12 @@ import java.io.File;
 import java.util.Collection;
 import java.util.List;
 
+import org.junit.Test;
+import org.junit.runner.notification.RunNotifier;
+
 import winterwell.utils.Utils;
+import winterwell.utils.io.FileUtils;
+import winterwell.utils.reporting.Log;
 
 public class RandomTestRunner {
 
@@ -15,7 +20,8 @@ public class RandomTestRunner {
 	}
 
 	public static void main(String[] args) {
-		RandomTestRunner ptr = new RandomTestRunner(new File(args[0]));
+		File f = args.length==0? new File(FileUtils.getWorkingDirectory(),"bin") : new File(args[0]);
+		RandomTestRunner ptr = new RandomTestRunner(f);
 		ptr.run(1);
 	}
 
@@ -25,13 +31,22 @@ public class RandomTestRunner {
 		
 		Collection<String> chosen = Utils.getRandomSelection(n, tests);
 
-		for(int i=0; i<n; i++) {
-			// Pick a random test
-			run();
-		}		
+		for (String klass : chosen) {
+			try {
+				run1(klass);
+			} catch(Throwable ex) {
+				Log.e(klass, ex);
+			}
+		}
 	}
 
-	private void run1() {
-		
+	void run1(String klass) throws Exception {
+		Class<?> clazz = Class.forName(klass);
+		if ( ! clazz.isAnnotationPresent(Test.class)) {
+			return;
+		}		
+		RunnerWithMemory runner = new RunnerWithMemory(clazz);
+		runner.run(null);
 	}
+	
 }

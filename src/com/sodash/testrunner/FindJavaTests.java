@@ -8,9 +8,9 @@ import winterwell.utils.ReflectionUtils;
 import winterwell.utils.io.FileUtils;
 
 /**
- * TODO find *Test files
+ * Find *Test files
  * @author daniel
- *
+ * @testedby {@link FindJavaTestsTest}
  */
 public class FindJavaTests {
 	
@@ -25,6 +25,8 @@ public class FindJavaTests {
 		List<String> tests = new ArrayList();
 		for (File file : classFiles) {
 			String klass = FileUtils.getRelativePath(file, classDir);
+			klass.replace('/', '.');
+			klass = klass.substring(0, klass.length()-".class".length());
 			tests.add(klass);
 		}
 		return tests;
